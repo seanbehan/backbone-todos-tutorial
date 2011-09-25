@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <title>Todo App with Backbone.js</title>
+    <script src="lib/jquery.js" type="text/javascript"></script>
+    <script src="lib/jquery.tmpl.js" type="text/javascript"></script>
+    <script src="lib/underscore.js" type="text/javascript"></script>
+    <script src="lib/backbone.js" type="text/javascript"></script>
+    <script src="lib/backbone.localStorage.js" type="text/javascript"></script>
+    <script src="todos.js" type="text/javascript"></script>
+
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen" title="no title" charset="utf-8">
+  </head>
+  <body>
+    <div id="app">
+      <header><h1>Todo App with Backbone.js</h1></header>
+      <div class="contents">
+        <input type="text" id="new-todo" value="" placeholder="Enter an item or task..."/>
+        <ul id="todo-list">
+          &nbsp;
+        </ul>
+
+        <div class="buttons">
+          <button class="clear-done on right">Clear Done</button> <button class="check-remaining">Check Remaining</button>
+        </div>
+
+      </div>
+    </div>
+
+    <footer>
+      Built by <a href='http://seanbehan.com' target="_blank">Sean Behan</a>
+    </footer>
+
+    <!-- Templates -->
+    <script id="todo-item" type="text/template">
+      <div class="todo {{if done}}done{{/if}}">
+        <div class="on right">
+          <input type='checkbox' {{if done}}checked{{/if}}/>
+          <span class="actions">
+            <a href="#" class="edit">&nbsp;</a>          
+            <a href="#" class="delete">&nbsp;</a>
+          </span>
+        </div>
+
+        <span class="content">${content}</span>
+        <form><input type="text" value="${content}">
+          <button class="done">done</button>
+          <a href="#" class="cancel">cancel</a>
+        </form>
+      </div>
+    </script>
+  </body>
+</html>
