@@ -1,75 +1,46 @@
 jQuery(function($){
+  /*
+    Model
+    Since we're using localStorage we do not have to define an endpoint. We are only going to 
+    define a couple defaults here. 
+    
+    Notice that we aren't defining the ${content} variable. Attributes can be attached/saved at anytime.
+    We're adding it on line 92 of this file, when we pass an objec to the Todos collection.
+
+  */
   window.Todo = Backbone.Model.extend({
     defaults: {
-      title: "Hello World",
       done: false
-    },
-
-    toggle: function(){
-      this.save({done: !this.get("done")});
     }
   });
 
+  /*
+  The collection of Todo models
+  We can define a store (localStorage for now) and the model this collection will be responsible for.
+  */
   window.TodoCollection = Backbone.Collection.extend({
     model: Todo,
-    localStorage: new Store("todos"),
 
-    done: function(){
-      return this.filter(function(todo){
-        return todo.get('done');
-      });
-    },
-
-    remaining: function(){
-      return this.filter(function(todo){
-        return !todo.get('done')
-      });
-    }
+    localStorage: new Store("todos")
 
   });
-  window.Todos = new TodoCollection;
+  window.Todos = new TodoCollection; // Needs to be instantiate
 
+  /*
+  The single list element view
+  <li>${content}</li>
+  We use jQuery template to grab the right template and update variables
+  with model data. We declare the tagName so it will wrap the template that
+  we give it with this element. This is why you only see the ${content} variable in the template.
+  */
   window.TodoView = Backbone.View.extend({
     tagName: "li",
 
-    events: {
-      "click li .checkbox":  "toggleDone",
-      "click a.delete":                 "deleteTodo",
-      "click a.edit":                   "editTodo",
-      "dblclick span":                  "editTodo",
-      "click a.cancel":                 "cancelEdit",
-      "click .done":                    "doneEditing"
-    },
-
-    template: $("#todo-item").template(),
+    template: $("#todo-item").template(), // Look in index.html for this div. Only contains ${content} variable for now.
 
     initialize: function(){
-      _.bindAll(this, "render", "toggleDone", "deleteTodo", "editTodo", "cancelEdit", "doneEditing");
-
+      _.bindAll(this, "render");
       this.model.bind("change", this.render,  this);
-      this.model.bind("destroy", this.remove, this);
-    },
-
-    toggleDone: function(){
-      this.model.toggle()
-    },
-
-    editTodo: function(){
-      $(".editing").removeClass("editing");
-      $(this.el).addClass('editing').focus();
-    },
-
-    cancelEdit: function(){
-      $(this.el).removeClass('editing');
-    },
-
-    doneEditing: function(){
-      this.model.save({content: this.$("input[type=text]").val()})
-      $(this.el).removeClass('editing');
-    },
-
-    deleteTodo: function(){
-      this.model.destroy()
     },
 
     render: function(){
@@ -79,64 +50,48 @@ jQuery(function($){
     }
   });
 
+  /*
+  The application view
+  What happens here? When a key is pressed in the #new-todo input field, the
+  createTodo function is called. The function checks to see that the Enter key
+  was pressed. If yes, it adds a new Todo to the Collection (defined above).
+  In the initialize function, we see the following
+
+  Todos.bind('add', this.addOne)
+
+  What this is saying is that anytime the "add" event is fired on "Todos" collection, the addOne function
+  should be called as well. When we use the Todos.create method, "add" is called behind the
+  scenes. Our addOne function then updates the DOM with the logic. Todos.create/add handles passing a
+  model to our addOne function.
+  */
   window.AppView = Backbone.View.extend({
     el: $("#app"),
+
+    // execute the createTodo function when a key is pressed
     events: {
-      "keypress #new-todo": "createTodo",
-      "click .clear-done": "clearDone",
-      "click .check-remaining": "checkRemaining"
+      "keypress #new-todo": "createTodo"
     },
 
     initialize: function(){
-      _.bindAll(this, "addOne", "addAll", "clearDone", "checkRemaining", "render");
+      _.bindAll(this, "addOne", "render");
+      this.input = this.$("#new-todo"); // store a reference so our functions can use it for convenience.
 
-      this.input = this.$("#new-todo");
-
-      Todos.bind('add', this.addOne);       // when Todos.create is called, add is invoked
-      Todos.bind('reset', this.addAll);   // refresh needs to fetch and add all to the page
-
-      Todos.fetch();
-    },
-
-    clearDone: function(){
-      _.each(Todos.done(), function(todo){
-        todo.destroy();
-      });
-      return false;
-    },
-
-    checkRemaining: function(){
-      var remaining = Todos.remaining()
-      if(remaining.length == 0){
-        _.each(Todos.done(), function(todo){
-          todo.toggle();
-        });
-      } else {
-        _.each(Todos.remaining(), function(todo){
-          todo.toggle();
-        });
-      }
-    },
-
-    addAll: function(){
-      Todos.each(this.addOne)
+      Todos.bind('add', this.addOne);
     },
 
     addOne: function(todo){
       var view = new TodoView({model: todo});
-      this.$("#todo-list").prepend(view.render().el);
+      this.$("#todo-list").prepend(view.render().el); // update DOM
     },
 
     createTodo: function(e){
       if(e.keyCode!=13) return;
       var value = this.input.val();
-      if(!value) return;
 
-      Todos.create({content: value}); // will call add (which is bound above)
-      this.input.val(''); // reset the input field
+      // we use the Todos collection to add items
+      Todos.create({content: value});
     }
   });
 
   window.App = new AppView;
-
 });
