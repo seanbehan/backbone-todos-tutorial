@@ -13,8 +13,10 @@
   <body>
     <div id="app">
       <header><h1>Todo App Backbone.js Tutorial!</h1></header>
+      
       <div class="contents">
         <input type="text" id="new-todo" value="" placeholder="Enter an item or task..."/>
+
         <ul id="todo-list">
           &nbsp;
         </ul>
@@ -34,7 +36,7 @@
     <script id="todo-item" type="text/template">
       <div class="todo {{if done}}done{{/if}}">
         <div class="on right">
-          <input type='checkbox' {{if done}}checked{{/if}}/>
+          <input type='checkbox' class="checkbox" {{if done}}checked{{/if}}/>
           <span class="actions">
             <a href="#" class="edit">&nbsp;</a>          
             <a href="#" class="delete">&nbsp;</a>
@@ -48,5 +50,6 @@
         </form>
       </div>
     </script>
+    
   </body>
 </html>

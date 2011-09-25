@@ -1,7 +1,7 @@
 body {
   font-family:arial;
-  color:#999;
   background:url(images/whitey.png);
+  color:#999;  
 }
 
 a {
@@ -84,14 +84,14 @@ header {}
     width:15px;
     overflow:hidden;
   }
-  .done {
-/*    background:lightyellow;*/
-  }
+
   .done span {
     text-decoration:line-through;
     color:#CCC;
-    
   }
+  .done  .actions {
+      text-decoration:none;
+    }  
 
   .delete {
     color:gray;

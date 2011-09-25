@@ -1,6 +1,4 @@
 jQuery(function($){
-  //
-  // MODELS
   window.Todo = Backbone.Model.extend({
     defaults: {
       title: "Hello World",
@@ -12,8 +10,6 @@ jQuery(function($){
     }
   });
 
-  //
-  // COLLECTIONS
   window.TodoCollection = Backbone.Collection.extend({
     model: Todo,
     localStorage: new Store("todos"),
@@ -33,18 +29,16 @@ jQuery(function($){
   });
   window.Todos = new TodoCollection;
 
-  //
-  // Views
   window.TodoView = Backbone.View.extend({
     tagName: "li",
 
     events: {
-      "click li input[type=checkbox]": "toggleDone",
-      "click a.delete": "deleteTodo",
-      "click a.edit": "editTodo",
-      "dblclick span": "editTodo",      
-      "click a.cancel": "cancelEdit",
-      "click .done": "doneEditing"
+      "click li .checkbox":  "toggleDone",
+      "click a.delete":                 "deleteTodo",
+      "click a.edit":                   "editTodo",
+      "dblclick span":                  "editTodo",
+      "click a.cancel":                 "cancelEdit",
+      "click .done":                    "doneEditing"
     },
 
     template: $("#todo-item").template(),
@@ -85,8 +79,6 @@ jQuery(function($){
     }
   });
 
-  //
-  // APP
   window.AppView = Backbone.View.extend({
     el: $("#app"),
     events: {
